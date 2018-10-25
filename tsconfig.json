@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es6",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "declaration": true,
+    "outDir": "./dist-esm"
+  },
+  "exclude": [
+    "package-lock.json",
+    ".npmrc",
+    "node_modules"
+  ],
+  "files": [
+    "./src/index.ts"
+  ]   
+}
