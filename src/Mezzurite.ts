@@ -118,6 +118,5 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         
         this._appInsights.trackPageViewPerformance(event , customProperties);
     }
-
     public priority: number =  172;
 }
