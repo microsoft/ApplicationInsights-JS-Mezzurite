@@ -1,8 +1,8 @@
-#Introduction
+# Introduction
     
     This is the applicationinsights Plugin for the Mezzurite Timing tool.  This plugin enables mezzurtie timings to be sent to your Applicaiton Insight log storage. 
 
-#Getting Started
+# Getting Started
     1. Enable application insights in your azure subscriptioing (TODO Add link to doc)
     2. Pull in Mezzurite and instrement your site with it (TODO Add Link to mezzurite)
     3. Include the plugin in a script tag (TODO add link to plugin cdn drop).
@@ -19,13 +19,13 @@
         ```
     5. You can find your data in your Azure Telemetry in the PageviewPerformance event, in the properties tag under data.baseData.
 
-#Build
+# Build
 
     ```
     npm run build
     ```
 
-#Test
+# Test
 
     TODO Add tests
     ```
