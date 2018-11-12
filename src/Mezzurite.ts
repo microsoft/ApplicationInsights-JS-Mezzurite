@@ -96,13 +96,13 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         if (e.Behavior) {
             behavior = e.Behavior;
         }
-        customProperties.Behavior = behavior;
+        customProperties.behavior = behavior;
 
         if (e.SystemTiming){
-            customProperties.SystemTiming = JSON.stringify( e.SystemTiming);
+            customProperties.systemTiming = JSON.stringify( e.SystemTiming);
         }
         if (e.Timing) {
-            customProperties.CustomTiming = JSON.stringify(e.Timing);
+            customProperties.customTiming = JSON.stringify(e.Timing);
         }
         
         if (e.ViewportHeight){
@@ -113,7 +113,7 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         }
         if (e.Framework)
         {
-            customProperties.Framework = JSON.stringify(e.Framework);
+            customProperties.framework = JSON.stringify(e.Framework);
         }
         
         this._appInsights.trackPageViewPerformance(event , customProperties);
