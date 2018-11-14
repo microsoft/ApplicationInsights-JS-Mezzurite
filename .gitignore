@@ -339,3 +339,7 @@ Doc/
 browser/
 dist/
 dist-esm/
+
+#NPM
+
+package.json.lock
