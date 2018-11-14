@@ -342,4 +342,4 @@ dist-esm/
 
 #NPM
 .npmrc
-package.json.lock
+package-lock.json
