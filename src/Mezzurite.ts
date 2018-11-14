@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 import {ITelemetryPlugin, ITelemetryItem, IConfiguration, 
-        IAppInsightsCore } from "applicationinsights-core-js";
+        IAppInsightsCore } from "@microsoft/applicationinsights-core-js";
 
-import {IPageViewPerformanceTelemetry } from "applicationinsights-common";
+import {IPageViewPerformanceTelemetry } from "@microsoft/applicationinsights-common";
 
 /**
  * Application Insights PlugIn for Mezzurite Timings
