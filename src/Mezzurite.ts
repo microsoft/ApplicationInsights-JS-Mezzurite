@@ -82,14 +82,22 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
      *          ViewPortWidth:  Width of the viewport when logged
      *          SystemTiming: (optional)  Used to store data from the Perfomrance Object
      *          Timing: (optional) This is where the Mezzurite Data is passed in.
+     *          RouteUrl:  This is the path supplied by the spa framework for the current route.
      *          
      */
     public log(e :any)
     {
         let customProperties = <any>{};
+        let url = "";
+            url = window.location && window.location.href || "";
+
+        if (e.RouteUrl){
+                url = e.RouteUrl;
+        }
+
         let event: IPageViewPerformanceTelemetry ={
             name: window.document && window.document.title || "",
-            url:  window.location && window.location.href || ""
+            url:  url
         };
 
         let behavior = 'autoLog'; 
@@ -118,5 +126,6 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         
         this._appInsights.trackPageViewPerformance(event , customProperties);
     }
+    
     public priority: number =  172;
 }
