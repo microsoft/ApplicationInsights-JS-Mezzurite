@@ -92,7 +92,8 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
             url:  window.location && window.location.href || ""
         };
 
-        let behavior = 'autoLog'; 
+        // setting to -1 as this is an auto logged event.
+        let behavior = -1; 
         if (e.Behavior) {
             behavior = e.Behavior;
         }
