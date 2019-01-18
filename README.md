@@ -1,13 +1,12 @@
 # Introduction
     
-    This is the applicationinsights Plugin for the Mezzurite Timing tool.  This plugin enables mezzurtie timings to be sent to your Applicaiton Insight log storage. 
+    This is the applicationinsights Plugin for the Mezzurite Timing tool.  This plugin enables mezzurite timings to be sent to your Application Insight log storage.
 
 # Getting Started
 
     1. Enable application insights in your azure subscriptioin
     2. Include the Applicaiton Insights Web Sku in your page @microsoft/applicationinsights-web
     3. Pull in Mezzurite and instrement your site with it @microsoft/mezzurite
-
     4. Update your Applicaiton insights setup code with:
 
         ```
