@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>1ds Demo </title>
+    <script>
+    // TODO add Mezzurite logger umd
+    // grab it from the browser folder after doing a npm run build.
+</script>    
+    <script>
+        // "https://1dsjssdk.azureedge.net/ai.1.min.js"
+        // "https://1dsjssdk.blob.core.windows.net/scripts/aisdk.0.0.20-beta.min.js"
+        var mzLog = new ApplicationInsightsMezzurite.MezzuritePlugIn();
+        var sdkInstance="appInsightsSDK";window[sdkInstance]="appInsights";var aiName=window[sdkInstance],aisdk=window[aiName]||function(e){function n(e){i[e]=function(){var n=arguments;i.queue.push(function(){i[e].apply(i,n)})}}var i={config:e};i.initialize=!0;var t=document,a=window;setTimeout(function(){var n=t.createElement("script");n.src=e.url||"https://1dsjssdk.blob.core.windows.net/scripts/aisdk.0.0.20-beta.min.js",t.getElementsByTagName("script")[0].parentNode.appendChild(n)});try{i.cookie=t.cookie}catch(e){}i.queue=[];for(var s=["PageView","Exception","Trace","DependencyData","Metric"];s.length;)n("track"+s.pop());if(n("startTrackPage"),n("stopTrackPage"),e.extensionConfig&&e.extensionConfig.ApplicationInsightsAnalytics&&!1===e.extensionConfig.ApplicationInsightsAnalytics.disableExceptionTracking){n("_"+(s="onerror"));var o=a[s];a[s]=function(e,n,t,a,r){var c=o&&o(e,n,t,a,r);return!0!==c&&i["_"+s]({message:e,url:n,lineNumber:t,columnNumber:a,error:r}),c},e.extensionConfig.ApplicationInsightsAnalytics.autoExceptionInstrumented=!0}return i}
+        (
+            {
+              instrumentationKey: "xxx",
+              extensions : [mzLog]
+            }
+        );
+        if(window[aiName]=aisdk,aisdk.queue&&0===aisdk.queue.length){var pageViewItem={name:document.title?document.title:"",uri:document.URL?document.URL:""};aisdk.trackPageView(pageViewItem)}
+    </script>
+    
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <script>
+        function sendTelemetry(){
+            
+          var t =document.getElementById("IncreaseBy"); 
+          var increase = parseInt(t.value);
+
+          var routeNames = [{"name":'/', "minValue": 1000, "timetoSend":"8"},
+                            {"name":'/home', "minValue": 1500, "timetoSend":"2"},
+                            {"name":'/shop', "minValue": 3000, "timetoSend":"1"},
+                            {"name":'/shop/chart/', "minValue": 2000, "timetoSend":"3"},
+                            {"name":'/help', "minValue": 2500, "timetoSend":"5"},
+                            {"name":'/help/faq', "minValue": 500, "timetoSend":"3"}];
+
+           // Send ALT for rounte
+            
+
+            routeNames.forEach((e) => {
+                // Send some soft navs to other pages
+                var k = parseInt(e.timetoSend);
+                for (var i =0; i < k; i++) {
+                mezzurite.EventElement.dispatchEvent(new CustomEvent('Timing', {detail:CreateTimingObject(e.name, 2 * e.minValue , increase, true)}));
+                mezzurite.EventElement.dispatchEvent(new CustomEvent('Timing', {detail:CreateTimingObject(e.name, e.minValue , increase, false)}));
+                }
+                
+            });
+            
+        }
+        
+        function CreateTimingObject(route, baseNumber, increase, includeALT){
+            
+            var components = createComopnentTimings(baseNumber, increase);
+            
+            var vltC = components.slice(0, 5);
+
+            // get max component load time for vlt
+            var vlt = 0;
+
+            vltC.forEach((e)=> {
+                if (vlt < e.componentLoadTime){
+                vlt = e.componentLoadTime;
+                }
+            });
+
+            var obj = { };
+            
+            if (includeALT)  {
+                var alt = (Math.random() * ((baseNumber * 2) - 1000) + 1000).toFixed(4)/1;
+
+                obj.Timing =[
+                            {metricType:"Redirect", value:0, data:""},
+                            {metricType:"ALT",  value:alt, data:""},
+                            {metricType:"VLT",  value:vlt, data: JSON.stringify(vltC)},
+                            {metricType:"FVLT", value:alt+vlt, data:""},
+                            {metricType:"AllComponents", value:-1, data: JSON.stringify(components)}
+                            ];
+            }  else  {
+                obj.Timing =[
+                            {metricType:"Redirect", value:0, data:""},
+                            {metricType:"VLT",  value:vlt, data: JSON.stringify(vltC)},
+                            {metricType:"AllComponents", value:-1, data: JSON.stringify(components)}
+                            ];
+            }
+
+                obj.Framework ={name:"@ms/mezzurite-angular",version:"2.0.0"};
+                obj.ViewportWidth=800;
+                obj.ViewportHeight=640;
+                obj.RouteUrl=route;
+
+            return obj;
+        }
+
+     function createComopnentTimings(baseTime, increase){
+        var componentList = ['navTree', 'header', 'mainContent', 'heroButton', 'contentBlock', 'lowerContentBlock', 'footer', 'searchBox', 'login', 'reviewSection'];
+        
+        var data= [];
+
+
+        var index = 0;
+        var times = createCTime(componentList.length, baseTime, increase);
+            
+            componentList.forEach((v) => {
+                
+                var text = "";
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      
+                for (var i = 0; i < 8; i++){
+                        text += possible.charAt(Math.floor(Math.random() * possible.length));    
+                    }
+
+                 data.push({"name":"mz;" + v +";" + text,
+                        "startTime": times[index].startTime,
+                        "endTime": times[index].endTime,
+                        "timeToMount": times[index].MountTime,
+                        "componentLoadTime":times[index].totalTime
+                        }); 
+                index++;
+                
+            });
+
+            return data;
+        }
+
+        function createCTime(size, baseTime, increase){
+            var data = [];
+
+            
+            for (i =0; i < size; i++) {
+                var tmp = {};
+                var low = baseTime;
+                if (i ==0) {
+                    low = baseTime + increase;
+                }
+                
+                tmp.endTime = ((low + 50) - (Math.random() * 1250)).toFixed(4)/1;
+                
+                tmp.startTime = (low - tmp.endTime).toFixed(4)/1;
+                tmp.MountTime = ((Math.abs(tmp.startTime - tmp.endTime))/ (Math.round(Math.random() * 6) +1)).toFixed(4)/1;
+                tmp.totalTime = Math.abs(tmp.startTime - tmp.endTime);
+            data.push(tmp);
+            }
+        data.sort((a, b) => {
+            return b.totalTime - a.totalTime;
+        });
+
+        return data;
+        }
+    </script>
+    <script>
+        
+        function setupAutoSend(){
+        window.sendTelemetryInterval = setInterval(function(){
+            sendTelemetry()
+        }, 5000);
+        }
+
+        
+
+    </script>
+    <div id="root">
+        <p>Increase Time: <input type="text" size="30" id="IncreaseBy" value="0"></p>
+        <button onclick="sendTelemetry()">Send PageViewPerformance</button>
+        <button onclick="clearInterval( window.sendTelemetryInterval)">Kill AutoSend</button>
+        <button onclick="setupAutoSend()">Start AutoSend</button>
+    </div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
