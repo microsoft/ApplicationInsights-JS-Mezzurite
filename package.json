@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/applicationinsights-mezzurite",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Logging Extention for Mezzurtie Timing Package",
   "main": "./browser/applicationInsight.mezzurite.umd.js",
   "module": "./dist-esm/index.js",
