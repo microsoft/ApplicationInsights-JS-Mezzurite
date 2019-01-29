@@ -1,12 +1,12 @@
 {
   "name": "@microsoft/applicationinsights-mezzurite",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Logging Extention for Mezzurtie Timing Package",
-  "main": "./dist/index.ts",
-  "module": "./dist-esm/index.ts",
+  "main": "./browser/applicationInsight.mezzurite.umd.js",
+  "module": "./dist-esm/index.js",
   "scripts": {
     "clean": "shx rm -rf _bundles dist dist-esm",
-    "build": "npm run clean && rollup -c && typedoc --out Doc"
+    "build": "npm run clean && tsc --p tsconfig.json && rollup -c && typedoc --out Doc"
   },
   "repository": {
     "type": "git",
@@ -25,9 +25,8 @@
     "vsts-npm-auth": "^0.37.0"
   },
   "dependencies": {
-    "@microsoft/applicationinsights-analytics-js": "1.0.0-beta.15",
-    "@microsoft/applicationinsights-common": "1.0.0-beta.16",
-    "@microsoft/applicationinsights-core-js": "1.0.0-beta.5",
-    "typedoc": "^0.14.2"
+    "@microsoft/applicationinsights-analytics-js": "^1.0.0-beta.3",
+    "@microsoft/applicationinsights-common": "^1.0.0-beta.5",
+    "@microsoft/applicationinsights-core-js": "^1.0.0-beta.2"
   }
 }

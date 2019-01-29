@@ -1,19 +1,28 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "es6",
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "noImplicitAny": false,
-    "noEmitOnError": true,
-    "declaration": true,
-    "outDir": "./dist-esm"
+      "baseUrl": ".",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "strict": false,
+      "strictPropertyInitialization": false,
+      "module": "ES2015",
+      "moduleResolution": "node",
+      "jsx": "react",
+      "sourceMap": true,
+      "inlineSources": true,
+      "target": "es5",
+      "skipLibCheck": true,
+      "outDir": "./dist-esm",
+      "lib": [
+          "es2015",
+          "dom"
+      ],
+      "typeRoots": [
+          "node_modules/@types/"
+      ]
   },
   "exclude": [
-    "package-lock.json",
-    ".npmrc",
-    "node_modules"
+      "node_modules"
   ],
   "files": [
     "./src/index.ts"
