@@ -140,8 +140,8 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         //     customProperties.systemTiming = JSON.stringify( e.SystemTiming);
         // }
         if (e.Timings && e.Timings.length > 0) {
-            for (let i = 0; i < e.Timing.length; i++) {
-                let obj = e.Timing[i];
+            for (let i = 0; i < e.Timings.length; i++) {
+                let obj = e.Timings[i];
                 let metricType = obj.metricType.toString();
                 let loadTime = obj.value;
 
@@ -172,7 +172,7 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
                     }
                 }
             }
-            customProperties.customTiming = JSON.stringify(e.Timing);
+            customProperties.customTiming = JSON.stringify(e.Timings);
         }
         
 
