@@ -44,6 +44,18 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
      * @param item incoming telementry item.
      */
     public processTelemetry(item: ITelemetryItem) {
+
+        // use the generated page id for parent Id and use props.id as operation Id
+        if (item.tags["ai.operation.id"]) {
+            let parentId = item.tags["ai.operation.id"];
+            let origId = item.baseData && item.baseData.properties && item.baseData.properties.id ? item.baseData.properties.id : undefined;
+            if (origId) {
+                item.tags["ai.operation.id"] = origId;
+                delete item.baseData.properties.id;
+                item.tags["ai.operation.parentId"] = parentId;
+            }
+        }
+
         if (this._nextPlugin && this._nextPlugin.processTelemetry) {
             this._nextPlugin.processTelemetry(item);
         }
@@ -106,14 +118,6 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
             behavior = e.Behavior;
         }
         customProperties.behavior = behavior;
-
-        if (e.SystemTiming){
-            customProperties.systemTiming = JSON.stringify( e.SystemTiming);
-        }
-        if (e.Timing) {
-            customProperties.customTiming = JSON.stringify(e.Timing);
-        }
-        
         if (e.ViewportHeight){
             customProperties.vpHeight = e.ViewportHeight;
         }
@@ -124,8 +128,51 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         {
             customProperties.framework = JSON.stringify(e.Framework);
         }
-        
         this._appInsights.trackPageViewPerformance(event , customProperties);
+
+
+        if (e.SystemTiming){
+            customProperties.systemTiming = JSON.stringify( e.SystemTiming);
+        }
+        if (e.Timing && e.Timing.length > 0) {
+            for (let i = 0; i < e.Timing.length; i++) {
+                let obj = e.Timing[i];
+                let metricType = obj.metricType.toString();
+                let loadTime = obj.value;
+
+                if (obj.data) {
+                    let componentTimes = JSON.parse(obj.data);
+                    for (let j = 0; j < componentTimes.length; j++) {
+                        let ct = componentTimes[j];
+                        let props = {};
+                        let measurements = {};
+                        props["metricType"] = metricType;
+                        let name = undefined;
+                        let id = undefined;
+
+                        if (ct.name) {
+                            let values=ct.name.split(";");
+                            name = values.length >=2 ? values[1] : name;
+                            id = values.length ==3 ? values[2]: id;
+                        }
+
+                        props["componentName"] = name;
+                        props["id"] = id;
+                        props["startTime"] = ct.startTime.toString();
+                        props["endTime"] = ct.endTime.toString();
+                        measurements["timeToMount"] = ct.timeToMount;
+                        measurements["componentLoadTime"] = ct.componentLoadTime;
+                        measurements["loadTime"] = loadTime;
+                        this._appInsights.trackEvent({ name: "mz", properties: props, measurements: measurements});
+                    }
+                }
+            }
+            customProperties.customTiming = JSON.stringify(e.Timing);
+        }
+        
+
+        
+        
     }
     
     public priority: number =  172;

@@ -4,8 +4,8 @@
 
 # Getting Started
 
-    1. Enable application insights in your azure subscriptioin
-    2. Include the Applicaiton Insights Web Sku in your page @microsoft/applicationinsights-web
+    1. Enable application insights in your azure subscription
+    2. Include the Applicaiton Insights Web Sku in your page @microsoft/applicationinsights-web (or reference by CDN from https://az416426.vo.msecnd.net/beta/ai.1.min.js)
     3. Pull in Mezzurite and instrement your site with it @microsoft/mezzurite
     4. Update your Applicaiton insights setup code with:
 

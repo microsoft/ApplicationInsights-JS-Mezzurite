@@ -25,8 +25,9 @@
     "vsts-npm-auth": "^0.37.0"
   },
   "dependencies": {
-    "@microsoft/applicationinsights-analytics-js": "^1.0.0-beta.3",
-    "@microsoft/applicationinsights-common": "^1.0.0-beta.5",
-    "@microsoft/applicationinsights-core-js": "^1.0.0-beta.2"
+    "@microsoft/applicationinsights-analytics-js": "1.0.0-beta.15",
+    "@microsoft/applicationinsights-common": "1.0.0-beta.16",
+    "@microsoft/applicationinsights-core-js": "1.0.0-beta.5",
+    "typedoc": "^0.14.2"
   }
 }
