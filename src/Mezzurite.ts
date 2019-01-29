@@ -99,6 +99,11 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
      */
     public log(e :any)
     {
+        if (e.ObjectVersion.toString().length > 0 && e.ObjectVersion[0] !== "1") {
+            console.warn("Does not support mezzurite timing events for version" + e.ObjectVersion);
+            return;
+        }
+
         let customProperties = <any>{};
         let url = "";
             url = window.location && window.location.href || "";
@@ -130,10 +135,10 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         }
         this._appInsights.trackPageViewPerformance(event , customProperties);
 
-
-        if (e.SystemTiming){
-            customProperties.systemTiming = JSON.stringify( e.SystemTiming);
-        }
+        // enable if you need to see browser timings as well
+        // if (e.SystemTiming){
+        //     customProperties.systemTiming = JSON.stringify( e.SystemTiming);
+        // }
         if (e.Timing && e.Timing.length > 0) {
             for (let i = 0; i < e.Timing.length; i++) {
                 let obj = e.Timing[i];
@@ -150,19 +155,19 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
                         let name = undefined;
                         let id = undefined;
 
-                        if (ct.name) {
-                            let values=ct.name.split(";");
-                            name = values.length >=2 ? values[1] : name;
-                            id = values.length ==3 ? values[2]: id;
+                        props["componentName"] = ct.name;
+                        props["id"] = ct.id;
+                        measurements["startTime"] = ct.startTime;
+                        measurements["endTime"] = ct.endTime;
+                        measurements["untilMount"] = ct.untilMount;
+                        measurements["clt"] = ct.clt;
+                        measurements["loadTime"] = loadTime;
+                        
+                        if (ct.slowResource) {
+                            measurements["slowestResourceTime"] = ct.slowResource.endTime;
+                            props["slowestResourceName"] = ct.slowResource.name;
                         }
 
-                        props["componentName"] = name;
-                        props["id"] = id;
-                        props["startTime"] = ct.startTime.toString();
-                        props["endTime"] = ct.endTime.toString();
-                        measurements["timeToMount"] = ct.timeToMount;
-                        measurements["componentLoadTime"] = ct.componentLoadTime;
-                        measurements["loadTime"] = loadTime;
                         this._appInsights.trackEvent({ name: "mz", properties: props, measurements: measurements});
                     }
                 }
