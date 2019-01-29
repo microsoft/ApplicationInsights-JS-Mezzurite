@@ -70,7 +70,7 @@
             if (includeALT)  {
                 var alt = (Math.random() * ((baseNumber * 2) - 1000) + 1000).toFixed(4)/1;
 
-                obj.Timing =[
+                obj.Timings =[
                             {metricType:"Redirect", value:0, data:""},
                             {metricType:"ALT",  value:alt, data:""},
                             {metricType:"VLT",  value:vlt, data: JSON.stringify(vltC)},
@@ -78,7 +78,7 @@
                             {metricType:"AllComponents", value:-1, data: JSON.stringify(components)}
                             ];
             }  else  {
-                obj.Timing =[
+                obj.Timings =[
                             {metricType:"Redirect", value:0, data:""},
                             {metricType:"VLT",  value:vlt, data: JSON.stringify(vltC)},
                             {metricType:"AllComponents", value:-1, data: JSON.stringify(components)}

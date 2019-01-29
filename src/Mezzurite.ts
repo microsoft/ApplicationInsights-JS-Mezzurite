@@ -139,7 +139,7 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         // if (e.SystemTiming){
         //     customProperties.systemTiming = JSON.stringify( e.SystemTiming);
         // }
-        if (e.Timing && e.Timing.length > 0) {
+        if (e.Timings && e.Timings.length > 0) {
             for (let i = 0; i < e.Timing.length; i++) {
                 let obj = e.Timing[i];
                 let metricType = obj.metricType.toString();
