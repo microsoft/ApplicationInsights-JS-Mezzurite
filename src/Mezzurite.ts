@@ -44,6 +44,18 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
      * @param item incoming telementry item.
      */
     public processTelemetry(item: ITelemetryItem) {
+
+        // use the generated page id for parent Id and use props.id as operation Id
+        if (item.tags["ai.operation.id"]) {
+            let parentId = item.tags["ai.operation.id"];
+            let origId = item.baseData && item.baseData.properties && item.baseData.properties.id ? item.baseData.properties.id : undefined;
+            if (origId) {
+                item.tags["ai.operation.id"] = origId;
+                delete item.baseData.properties.id;
+                item.tags["ai.operation.parentId"] = parentId;
+            }
+        }
+
         if (this._nextPlugin && this._nextPlugin.processTelemetry) {
             this._nextPlugin.processTelemetry(item);
         }
@@ -87,6 +99,11 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
      */
     public log(e :any)
     {
+        if (e.ObjectVersion.toString().length > 0 && e.ObjectVersion[0] !== "1") {
+            console.warn("Does not support mezzurite timing events for version" + e.ObjectVersion);
+            return;
+        }
+
         let customProperties = <any>{};
         let url = "";
             url = window.location && window.location.href || "";
@@ -106,14 +123,6 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
             behavior = e.Behavior;
         }
         customProperties.behavior = behavior;
-
-        if (e.SystemTiming){
-            customProperties.systemTiming = JSON.stringify( e.SystemTiming);
-        }
-        if (e.Timing) {
-            customProperties.customTiming = JSON.stringify(e.Timing);
-        }
-        
         if (e.ViewportHeight){
             customProperties.vpHeight = e.ViewportHeight;
         }
@@ -124,8 +133,51 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         {
             customProperties.framework = JSON.stringify(e.Framework);
         }
-        
         this._appInsights.trackPageViewPerformance(event , customProperties);
+
+        // enable if you need to see browser timings as well
+        // if (e.SystemTiming){
+        //     customProperties.systemTiming = JSON.stringify( e.SystemTiming);
+        // }
+        if (e.Timing && e.Timing.length > 0) {
+            for (let i = 0; i < e.Timing.length; i++) {
+                let obj = e.Timing[i];
+                let metricType = obj.metricType.toString();
+                let loadTime = obj.value;
+
+                if (obj.data) {
+                    let componentTimes = JSON.parse(obj.data);
+                    for (let j = 0; j < componentTimes.length; j++) {
+                        let ct = componentTimes[j];
+                        let props = {};
+                        let measurements = {};
+                        props["metricType"] = metricType;
+                        let name = undefined;
+                        let id = undefined;
+
+                        props["componentName"] = ct.name;
+                        props["id"] = ct.id;
+                        measurements["startTime"] = ct.startTime;
+                        measurements["endTime"] = ct.endTime;
+                        measurements["untilMount"] = ct.untilMount;
+                        measurements["clt"] = ct.clt;
+                        measurements["loadTime"] = loadTime;
+                        
+                        if (ct.slowResource) {
+                            measurements["slowestResourceTime"] = ct.slowResource.endTime;
+                            props["slowestResourceName"] = ct.slowResource.name;
+                        }
+
+                        this._appInsights.trackEvent({ name: "mz", properties: props, measurements: measurements});
+                    }
+                }
+            }
+            customProperties.customTiming = JSON.stringify(e.Timing);
+        }
+        
+
+        
+        
     }
     
     public priority: number =  172;
