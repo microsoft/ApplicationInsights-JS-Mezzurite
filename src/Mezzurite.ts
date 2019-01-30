@@ -153,9 +153,13 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
                     isRedirect  = obj.value;
                 }
                 else {
+                    if (obj.value > 0) {
                     props["Redirect"] = isRedirect;
+                    props["RouteUrl"] = url;
                     measurements[metricType] = obj.value;
+
                     this._appInsights.trackEvent({ name: "mz", properties: props, measurements: measurements});
+                    }
                 }
 
                 if (obj.data) {
@@ -164,10 +168,9 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
                         let ct = componentTimes[j];
                         let cprops = {};
                         let cmeasurements = {};
+                        
+                        cprops["RouteUrl"] = url;
                         cprops["metricType"] = metricType;
-                        let name = undefined;
-                        let id = undefined;
-
                         cprops["componentName"] = ct.name;
                         cprops["id"] = ct.id;
                         // cmeasurements["startTime"] = ct.startTime;
@@ -184,12 +187,7 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
                     }
                 }
             }
-            customProperties.customTiming = JSON.stringify(e.Timings);
         }
-        
-
-        
-        
     }
     
     public priority: number =  172;
