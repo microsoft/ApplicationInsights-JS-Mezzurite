@@ -163,7 +163,7 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
                         measurements["clt"] = ct.clt;
                         measurements["loadTime"] = loadTime;
                         
-                        if (ct.slowResource && ct.slowResource.name ) {
+                        if (ct.slowResource && ct.slowResource.name && ct.slowResource.endTime) {
                             measurements["slowestResourceTime"] = ct.slowResource.endTime;
                             props["slowestResourceName"] = ct.slowResource.name;
                         }
