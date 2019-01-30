@@ -140,35 +140,47 @@ export class MezzuritePlugIn implements ITelemetryPlugin{
         //     customProperties.systemTiming = JSON.stringify( e.SystemTiming);
         // }
         if (e.Timings && e.Timings.length > 0) {
+            var isRedirect  = -1;
+
             for (let i = 0; i < e.Timings.length; i++) {
                 let obj = e.Timings[i];
                 let metricType = obj.metricType.toString();
-                let loadTime = obj.value;
+
+                let props = {};
+                let measurements = {};
+
+                if (metricType === "Redirect") {
+                    isRedirect  = obj.value;
+                }
+                else {
+                    props["Redirect"] = isRedirect;
+                    measurements[metricType] = obj.value;
+                    this._appInsights.trackEvent({ name: "mz", properties: props, measurements: measurements});
+                }
 
                 if (obj.data) {
                     let componentTimes = JSON.parse(obj.data);
                     for (let j = 0; j < componentTimes.length; j++) {
                         let ct = componentTimes[j];
-                        let props = {};
-                        let measurements = {};
-                        props["metricType"] = metricType;
+                        let cprops = {};
+                        let cmeasurements = {};
+                        cprops["metricType"] = metricType;
                         let name = undefined;
                         let id = undefined;
 
-                        props["componentName"] = ct.name;
-                        props["id"] = ct.id;
-                        measurements["startTime"] = ct.startTime;
-                        measurements["endTime"] = ct.endTime;
-                        measurements["untilMount"] = ct.untilMount;
-                        measurements["clt"] = ct.clt;
-                        measurements["loadTime"] = loadTime;
+                        cprops["componentName"] = ct.name;
+                        cprops["id"] = ct.id;
+                        // cmeasurements["startTime"] = ct.startTime;
+                        // cmeasurements["endTime"] = ct.endTime;
+                        cmeasurements["untilMount"] = ct.untilMount;
+                        cmeasurements["clt"] = ct.clt;
                         
                         if (ct.slowResource && ct.slowResource.name && ct.slowResource.endTime) {
-                            measurements["slowestResourceTime"] = ct.slowResource.endTime;
-                            props["slowestResourceName"] = ct.slowResource.name;
+                            cmeasurements["slowestResourceTime"] = ct.slowResource.endTime;
+                            cprops["slowestResourceName"] = ct.slowResource.name;
                         }
 
-                        this._appInsights.trackEvent({ name: "mz", properties: props, measurements: measurements});
+                        this._appInsights.trackEvent({ name: "mz", properties: cprops, measurements: cmeasurements});
                     }
                 }
             }
