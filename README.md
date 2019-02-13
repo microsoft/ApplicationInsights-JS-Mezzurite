@@ -1,33 +1,66 @@
 # Introduction
     
-    This is the applicationinsights Plugin for the Mezzurite Timing tool.  This plugin enables mezzurite timings to be sent to your Application Insight log storage.
+This is the Application Insights Plugin for the Mezzurite Timing tool. This plugin enables Mezzurite timings to be sent to your Application Insights log storage.
+
+Below is an example of the data sent into Applicaiton Insights
+(https://github.com/Microsoft/Mezzurite/blob/master/exampleReport.png)
+
 
 # Getting Started
 
-    1. Enable application insights in your azure subscriptioin
-    2. Include the Applicaiton Insights Web Sku in your page @microsoft/applicationinsights-web
-    3. Pull in Mezzurite and instrement your site with it @microsoft/mezzurite
-    4. Update your Applicaiton insights setup code with:
+This logger is designed to work with
+[Mezzurite Timing Library](https://github.com/Microsoft/Mezzurite/blob/master/README.md) 
+[Application Insights JavaScript SDk](https://github.com/Microsoft/ApplicationInsights-JS/blob/master/README.md)
 
-        ```
-        var aIMz = new ApplicationInsightsMezzurite.MezzuritePlugIn();
+#### First install the logger code via npm
 
-        // Next you create a config object to pass to application insights.
-        var config { instrumentationKey: "YOUR_KEY_GOES_HERE",
-                     extension : [aIMz]
-                    };
+**@microsoft/applicationinsights-mezzurite:** [![npm version](https://badge.fury.io/js/%40microsoft%2Fapplicationinsights-mezzurite.svg)](https://badge.fury.io/js/%40microsoft%2Fapplicationinsights-mezzurite.png)
 
-        // Finally replace the { instrumentationKey: "YOUR_KEY_GOES_HERE" } object in the Application Insights code with the above config object.  This works for either the npm version or the snippet version.
-        ```
-    
-    Once hooked in, you can see your data in the BrowserTimings Object in Azure's Applicaiton Insights data tables.  
-    
+##### For EMS:
+Inside the file which contains the added application insights sku:
+```javascript
+import {withMezzuriteRouter} from '@microsoft/mezzurite-react';
+    const mzLog = new MezzuritePlugIn();
+    const iKey = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"; // Replace this with your instrumenationKey for Application Insights. 
+    const ai = new ApplicationInsights({config: {extensions: [mzLog], instrumentationKey: iKey, maxBatchInterval: 100, disableFetchTracking: false}});
+        ai.loadAppInsights();
+```
+##### For UMD:
+```html
+    <script type="text/javascript" src="<PathToNpmPackage>/browser/applicationInsight.mezzurite.umd.js"></script>
+    <!-- the snippet below assumes that JS SDK script has already loaded -->
+    <script type="text/javascript" src="/pathToAIJSSDK.js"></script>   
+    <script type="text/javascript">   
+        var mzLog = new ApplicationInsightsMezzurite.MezzuritePlugIn();
+
+        var snippet = {   
+                config: {   
+                    extensions: [mzLog],
+                    instrumentationKey: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx"   
+                }   
+            };   
+        var init = new Microsoft.ApplicationInsights.Initialization(snippet);   
+        var appInsights = init.loadAppInsights();   
+```
 
 # Build
+```
+ npm run build
+```
+# Test
 
-    ```
-    npm run build
-    ```
+In the Test folder of the repo there is a Test.html page. Build the project, then open test.html. This html uses the logger from the build and sends fake data to the subscription.
+
+You can validate the output either in Azure or by opening dev tools and looking at the network trace. The data will be in the track calls.
+
+
+# Mezzurite Ecosystem
+| Projects | |
+| ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [ApplicationInsights-JS-Mezzurite](https://github.com/Microsoft/ApplicationInsights-JS-Mezzurite) | [Application insights](https://github.com/Microsoft/ApplicationInsights-JS) extension of Mezzurite |
+| [Mezzurite](https://github.com/Microsoft/Mezzurite) | Base SDK for Mezzurite with Angular, AngularJS and React integration |
+| [Mezzurite DevTools](https://github.com/Microsoft/Mezzurite-DevTools) | See Mezzurite metrics being captured with a browser extension |
+| [VSCode Mezzurite](https://github.com/Microsoft/vscode-mezzurite) | Check which components and modules are instrumented within VS Code |
 
 # Contributing
 
