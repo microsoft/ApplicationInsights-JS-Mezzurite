@@ -3,7 +3,7 @@
 This is the Application Insights Plugin for the Mezzurite Timing tool. This plugin enables Mezzurite timings to be sent to your Application Insights log storage.
 
 Below is an example of the data sent into Applicaiton Insights
-(https://github.com/Microsoft/Mezzurite/blob/master/exampleReport.png)
+![Mezzurite Application Insights Workbook](https://github.com/Microsoft/ApplicationInsights-JS-Mezzurite/blob/master/exampleReport.png?raw=true)
 
 
 # Getting Started
