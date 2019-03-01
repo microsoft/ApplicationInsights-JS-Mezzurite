@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/%40microsoft%2Fapplicationinsights-mezzurite.svg)](https://badge.fury.io/js/%40microsoft%2Fapplicationinsights-mezzurite)
+
 # Introduction
     
 This is the Application Insights Plugin for the Mezzurite Timing tool. This plugin enables Mezzurite timings to be sent to your Application Insights log storage.
@@ -8,15 +10,23 @@ Below is an example of the data sent into Applicaiton Insights
 
 # Getting Started
 
-This logger is designed to work with
-[Mezzurite Timing Library](https://github.com/Microsoft/Mezzurite/blob/master/README.md) 
-[Application Insights JavaScript SDk](https://github.com/Microsoft/ApplicationInsights-JS/blob/master/README.md)
+This logger is designed to forward [Mezzurite Metrics](https://github.com/Microsoft/Mezzurite/blob/master/README.md) to [Application Insights](https://github.com/Microsoft/ApplicationInsights-JS/blob/master/README.md) for monitoring and analytics.
 
-#### First install the logger code via npm
+## Prerequisites
+### Install and Configure the Applicaiton Insights JS SDK 1.0.20 or Greater
+Follow the [Applicaiton Insights JS SDK Getting Started](https://www.npmjs.com/package/applicationinsights-js/v/1.0.20#get-started) documentation to enable Application Insights.
 
-**@microsoft/applicationinsights-mezzurite:** [![npm version](https://badge.fury.io/js/%40microsoft%2Fapplicationinsights-mezzurite.svg)](https://badge.fury.io/js/%40microsoft%2Fapplicationinsights-mezzurite.png)
+### Install and Instrument your Applicaiton with Mezzurite
+Follow the [Mezzurite Framework Documentation](https://github.com/Microsoft/Mezzurite#framework-specific-documentation) for your specific framework to install and instrument your applicaiton.
 
-##### For EMS:
+## Setup
+### Install the Extension
+Install the Application Insights Mezzurite Extension via NPM:
+
+https://www.npmjs.com/package/@microsoft/applicationinsights-mezzurite
+
+### Include the Extension in your Application
+#### For EMS:
 Inside the file which contains the added application insights sku:
 ```javascript
 import {withMezzuriteRouter} from '@microsoft/mezzurite-react';
@@ -25,7 +35,7 @@ import {withMezzuriteRouter} from '@microsoft/mezzurite-react';
     const ai = new ApplicationInsights({config: {extensions: [mzLog], instrumentationKey: iKey, maxBatchInterval: 100, disableFetchTracking: false}});
         ai.loadAppInsights();
 ```
-##### For UMD:
+#### For UMD:
 ```html
     <script type="text/javascript" src="<PathToNpmPackage>/browser/applicationInsight.mezzurite.umd.js"></script>
     <!-- the snippet below assumes that JS SDK script has already loaded -->
