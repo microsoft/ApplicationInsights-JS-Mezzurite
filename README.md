@@ -12,6 +12,9 @@ Below is an example of the data sent into Applicaiton Insights
 
 This logger is designed to forward [Mezzurite Metrics](https://github.com/Microsoft/Mezzurite/blob/master/README.md) to [Application Insights](https://github.com/Microsoft/ApplicationInsights-JS/blob/master/README.md) for monitoring and analytics.
 
+## Demo App
+[Azure-Samples/appinsights-guestbook](https://github.com/Azure-Samples/appinsights-guestbook) is a React application implementing the Application Insights Web SDK with Mezzurite. It can be used as a guide for your implementation.
+
 ## Prerequisites
 ### Install and Configure the Applicaiton Insights JS SDK 1.0.20 or Greater
 Follow the [Applicaiton Insights JS SDK Getting Started](https://www.npmjs.com/package/applicationinsights-js/v/1.0.20#get-started) documentation to enable Application Insights.
