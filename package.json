@@ -19,7 +19,7 @@
     "qunit": "^2.7.1",
     "rollup": "^0.66.6",
     "rollup-plugin-json": "^3.1.0",
-    "rollup-plugin-typescript2": "^0.17.2",
+    "rollup-plugin-typescript2": "^0.22.0",
     "rollup-plugin-uglify-es": "0.0.1",
     "shx": "^0.3.1",
     "tslint": "^5.14.0",

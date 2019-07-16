@@ -4,8 +4,6 @@
 import {ITelemetryPlugin, ITelemetryItem, IConfiguration,
         IAppInsightsCore } from '@microsoft/applicationinsights-core-js';
 
-import { IPageViewPerformanceTelemetry } from '@microsoft/applicationinsights-common';
-
 /**
  * Application Insights PlugIn for Mezzurite Timings
  */
@@ -14,15 +12,9 @@ export class MezzuritePlugIn implements ITelemetryPlugin {
   private _nextPlugin: ITelemetryPlugin;
 
   public constructor () {
-    if (!(window as any).mezzurite) {
-      (window as any).mezzurite = {};
-    }
-
-    if (!(window as any).mezzurite.EventElement) {
-      (window as any).mezzurite.EventElement = {};
-      (window as any).mezzurite.EventElement = document.createTextNode('');
-    }
-    (window as any).mezzurite.EventElement.addEventListener('Timing', (e) => { this.log(e.detail); } , false);
+    (window as any).addEventListener('mezzurite/componentsChanged', (e) => { 
+      this.log(e.detail); 
+    } , false);
   }
 
     /**
@@ -86,102 +78,24 @@ export class MezzuritePlugIn implements ITelemetryPlugin {
     /**
      *
      * @param e This is the telemetry Object from Mezzurite. It supports the following:
-     *          Framework: (name of spa framework and version)
-     *          Behavior: (Default autolog) Name of the timing action
-     *          ViewPortHeight:  Height of the viewport when logged
-     *          ViewPortWidth:  Width of the viewport when logged
-     *          SystemTiming: (optional)  Used to store data from the Performance Object
-     *          Timing: (optional) This is where the Mezzurite Data is passed in.
-     *          RouteUrl:  This is the path supplied by the spa framework for the current route.
-     *
+     *          startTime: is captured as soon as components starts mounting on the DOM
+     *          endTime: is captured after the component has finished loading on DOM
+     *          name: component name
      */
   public log (e: any) {
-    if (e.ObjectVersion.toString().length > 0 && e.ObjectVersion[0] !== '1') {
-      console.warn('Does not support mezzurite timing events for version' + e.ObjectVersion);
-      return;
-    }
 
-    let customProperties = {} as any;
-    let url = '';
-    url = window.location && window.location.href || '';
-
-    if (e.RouteUrl) {
-      url = e.RouteUrl;
-    }
-
-    let event: IPageViewPerformanceTelemetry = {
-      name: window.document && window.document.title || '',
-      url:  url
-    };
-
-        // setting to -1 as this is an auto logged event.
-    let behavior = -1;
-    if (e.Behavior) {
-      behavior = e.Behavior;
-    }
-    customProperties.behavior = behavior;
-    if (e.ViewportHeight) {
-      customProperties.vpHeight = e.ViewportHeight;
-    }
-    if (e.ViewportWidth) {
-      customProperties.vpWidth = e.ViewportWidth;
-    }
-    if (e.Framework) {
-      customProperties.framework = JSON.stringify(e.Framework);
-    }
-    this._appInsights.trackPageViewPerformance(event , customProperties);
-
-        // enable if you need to see browser timings as well
-        // if (e.SystemTiming){
-        //     customProperties.systemTiming = JSON.stringify( e.SystemTiming);
-        // }
-    if (e.Timings && e.Timings.length > 0) {
-      let isRedirect = -1;
-
-      for (let i = 0; i < e.Timings.length; i++) {
-        let obj = e.Timings[i];
-        let metricType = obj.metricType.toString();
-
-        let props = {};
-        let measurements = {};
-
-        if (metricType === 'Redirect') {
-          isRedirect = obj.value;
-        } else {
-          if (obj.value > 0) {
-            props['Redirect'] = isRedirect;
-            props['RouteUrl'] = url;
-            measurements[metricType] = obj.value;
-
-            this._appInsights.trackEvent({ name: 'mz', properties: props, measurements: measurements });
-          }
-        }
-
-        if (obj.data) {
-          let componentTimes = JSON.parse(obj.data);
-          for (let j = 0; j < componentTimes.length; j++) {
-            let ct = componentTimes[j];
-            let cprops = {};
-            let cmeasurements = {};
-
-            cprops['RouteUrl'] = url;
-            cprops['metricType'] = metricType;
-            cprops['componentName'] = ct.name;
-            cprops['id'] = ct.id;
-            // cmeasurements["startTime"] = ct.startTime;
-            // cmeasurements["endTime"] = ct.endTime;
-            cmeasurements['untilMount'] = ct.untilMount;
-            cmeasurements['clt'] = ct.clt;
-
-            if (ct.slowResource && ct.slowResource.name && ct.slowResource.endTime) {
-              cmeasurements['slowestResourceTime'] = ct.slowResource.endTime;
-              cprops['slowestResourceName'] = ct.slowResource.name;
-            }
-
-            this._appInsights.trackEvent({ name: 'mz', properties: cprops, measurements: cmeasurements });
-          }
-        }
+  var startTime: any, endTime: any;
+// We need a custom logic here for when to send the start and end events to AppInsights. For basic, working I'm sending it for all the events listened. We need to define a duration or 
+// have a logic to wait for the specific end event for each component and then log it to AppInsights.
+    for (var component in e) {
+      if (e[component].startTime) {
+        startTime = e[component].startTime;
       }
+      if (e[component].endTime) {
+        endTime = e[component].endTime;
+      }
+      //push data to App Insights as custom events with name: MezzuriteEvent
+      this._appInsights.trackEvent({name:"MezzuriteEvent"}, { startTime: startTime, endTime: endTime });
     }
   }
 
