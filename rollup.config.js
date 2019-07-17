@@ -1,30 +1,107 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+import babel from 'rollup-plugin-babel';
+import nodeResolve from 'rollup-plugin-node-resolve';
+import replace from 'rollup-plugin-replace';
+import { terser } from 'rollup-plugin-terser';
 
-import typescript from 'rollup-plugin-typescript2'
-import pkg from './package.json'
- export default [
-    {
-        input: './src/index.ts',
-        output: [
-          {
-            name: "ApplicationInsightsMezzurite",
-            file: "./browser/applicationInsight.mezzurite.umd.js",
-            format: 'umd',
-          }
-        ],
-        external: [
-          ...Object.keys(pkg.dependencies || {}),
-          ...Object.keys(pkg.peerDependencies || {}),
-        ],
-      plugins: [
-          typescript({
-            tsconfigOverride: {
-                compilerOptions: {
-                    declaration: false
-                }
-            }
-          }),
-        ],
-      }
-]
+import pkg from './package.json';
+
+export default [
+  {
+    input: 'src/index.js',
+    output: {
+      file: 'lib/applicationinsights-mezzurite.js',
+      format: 'cjs',
+      indent: false
+    },
+    external: [
+      ...Object.keys(pkg.dependencies || {}),
+      ...Object.keys(pkg.peerDependencies || {})
+    ],
+    plugins: [
+      nodeResolve(),
+      babel()
+    ]
+  },
+  {
+    input: 'src/index.js',
+    output: {
+      file: 'es/applicationinsights-mezzurite.js',
+      format: 'es',
+      indent: false
+    },
+    external: [
+      ...Object.keys(pkg.dependencies || {}),
+      ...Object.keys(pkg.peerDependencies || {})
+    ],
+    plugins: [
+      nodeResolve(),
+      babel()
+    ]
+  },
+  {
+    input: 'src/index.js',
+    output: {
+      file: 'es/applicationinsights-mezzurite.mjs',
+      format: 'es',
+      indent: false
+    },
+    plugins: [
+      nodeResolve(),
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('production')
+      }),
+      terser({
+        compress: {
+          pure_getters: true,
+          unsafe: true,
+          unsafe_comps: true,
+          warnings: false
+        }
+      })
+    ]
+  },
+  {
+    input: 'src/index.js',
+    output: {
+      file: 'dist/applicationinsights-mezzurite.js',
+      format: 'umd',
+      name: 'ApplicationInsightsMezzurite',
+      indent: false
+    },
+    plugins: [
+      nodeResolve(),
+      babel({
+        exclude: 'node_modules/**'
+      }),
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('development')
+      })
+    ]
+  },
+  {
+    input: 'src/index.js',
+    output: {
+      file: 'dist/applicationinsights-mezzurite.min.js',
+      format: 'umd',
+      name: 'ApplicationInsightsMezzurite',
+      indent: false
+    },
+    plugins: [
+      nodeResolve(),
+      babel({
+        exclude: 'node_modules/**'
+      }),
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('production')
+      }),
+      terser({
+        compress: {
+          pure_getters: true,
+          unsafe: true,
+          unsafe_comps: true,
+          warnings: false
+        }
+      })
+    ]
+  }
+];
