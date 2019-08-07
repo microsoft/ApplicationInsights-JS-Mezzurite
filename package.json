@@ -33,15 +33,16 @@
     "rollup-plugin-replace": "^2.1.1",
     "rollup-plugin-terser": "^4.0.4"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@microsoft/applicationinsights-core-js": "^2.1.0",
+    "@microsoft/applicationinsights-web": "^2.1.1",
+    "applicationinsights-js": "^1.0.20"
+  },
   "scripts": {
     "build": "rollup --config rollup.config.js src/index.js",
     "lint": "eslint ./src",
     "test": "jest"
   },
   "dependencies": {
-    "@microsoft/applicationinsights-core-js": "^2.1.0",
-    "@microsoft/applicationinsights-web": "^2.1.1",
-    "applicationinsights-js": "^1.0.20"
   }
 }
