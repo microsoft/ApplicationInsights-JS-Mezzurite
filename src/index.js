@@ -41,13 +41,13 @@ function initialize (config, core, extensions) {
 const MezzuritePlugin = {
   appInsights: null,
   identifier: 'MezzuritePlugin',
-  initialize: initialize,
+  initialize,
   initializePlugin: attachListener,
   log: logData,
   nextPlugin: null,
   priority: 172,
-  processTelemetry: processTelemetry,
-  setNextPlugin: setNextPlugin
+  processTelemetry,
+  setNextPlugin
 };
 
 export default MezzuritePlugin;
