@@ -1,21 +1,22 @@
-function TransformEventData (componentData) {
-  let startTime = null, endTime = null;
-  if (componentData!= null && componentData && componentData.startTime) {
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+function transformEventData (componentData) {
+  let startTime = null; let endTime = null;
+  if (componentData != null && componentData && componentData.startTime) {
     startTime = componentData.startTime;
   }
-  if (componentData!= null && componentData && componentData.endTime) {
+  if (componentData != null && componentData && componentData.endTime) {
     endTime = componentData.endTime;
   }
-  
-  if(componentData == null || componentData === undefined || startTime == null){
+
+  if (componentData == null || componentData === undefined || startTime == null) {
     return null;
-  } 
-  else{
+  } else {
     return {
-      startTime :startTime,
-      endTime : endTime
-    }
+      startTime: startTime,
+      endTime: endTime
+    };
   }
 }
-  
-  export default TransformEventData
+
+export default transformEventData;

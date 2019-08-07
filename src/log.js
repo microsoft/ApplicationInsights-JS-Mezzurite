@@ -1,18 +1,20 @@
-import IsValidEventData from './validation'
-import TransformEventData from "./transformData"
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+import isValidEventData from './validation';
+import transformEventData from './transformData';
 
-function LogData (MezzuritePlugin, eventData) {
+function logData (MezzuritePlugin, eventData) {
   let logStatus = false;
-  if(IsValidEventData(eventData)){
-    for (var component in eventData) {
-      var logData = TransformEventData(eventData[component]);
-      if(logData != null){
-        MezzuritePlugin._appInsights.trackEvent({name:"MezzuriteEvent"}, logData);
+  if (isValidEventData(eventData)) {
+    for (const component in eventData) {
+      const transformedData = transformEventData(eventData[component]);
+      if (transformedData != null) {
+        MezzuritePlugin.appInsights.trackEvent({ name: 'MezzuriteEvent' }, transformedData);
         logStatus = true;
       }
     }
   }
   return logStatus;
 }
-  
-  export default LogData
+
+export default logData;
