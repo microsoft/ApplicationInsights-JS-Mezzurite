@@ -43,6 +43,5 @@
     "lint": "eslint ./src",
     "test": "jest"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
