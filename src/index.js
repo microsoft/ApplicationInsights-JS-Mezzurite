@@ -3,4 +3,6 @@
 
 import MezzuriteAppInsightsLogger from './MezzuriteAppInsightsLogger';
 
-export default MezzuriteAppInsightsLogger;
+export {
+  MezzuriteAppInsightsLogger
+};
