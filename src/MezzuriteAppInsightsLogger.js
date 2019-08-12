@@ -4,15 +4,15 @@
 import onComponentsChanged from './onComponentsChanged';
 
 class MezzuriteAppInsightsLogger {
-  constructor(ai) {
+  constructor (ai) {
     this.listener = e => onComponentsChanged(e, ai);
   }
 
-  initialize() {
+  initialize () {
     window.addEventListener('mezzurite/componentsChanged', this.listener);
   }
 
-  dispose() {
+  dispose () {
     window.removeEventListener('mezzurite/componentsChanged', this.listener);
   }
 }
